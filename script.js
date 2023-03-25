@@ -1,75 +1,61 @@
-const options = ['rock','paper','scissors'];
+let playerScore = 0;
+let computerScore = 0;
+const buttons = document.querySelectorAll("button");
+const currentWinner = document.querySelector(".currentWinner");
+const pScore = document.querySelector(".pScore");
+const cScore = document.querySelector(".cScore");
+const gameWinner = document.querySelector(".gameWinner");
 
-
-function getComputerChoice(){
-
-    const computerChoice = options[Math.floor(Math.random()*options.length)];
-    return computerChoice
-}
-getComputerChoice()
- 
-function checkWinner(computerChoice,playerSelection){
-
-    if(computerChoice == playerSelection){
-        return "tie"
-    }
-
-    else if(
-       computerChoice == 'rock' && playerSelection == 'paper' ||
-       computerChoice == 'scissors' && playerSelection == 'rock' || 
-       computerChoice == 'paper' && playerSelection == 'scissors' )
-     
-    {
-        return "player"
-    }
-
-    else {
-        return "computer"
-    }
+// computer choice function
+function computerPlay() {
+  let choices = ["Rock", "Paper", "Scissors"];
+  let choiceNumber = Math.floor(Math.random() * choices.length);
+  return choices[choiceNumber];
 }
 
+// play round game
+function playRound(playerSelection, computerSelection = computerPlay()) {
+  let pS = playerSelection.toLowerCase();
+  let cS = computerSelection.toLocaleLowerCase();
 
-function playRound(computerChoice,playerSelection){
-    const result = checkWinner(computerChoice,playerSelection)
-    if(result == "tie"){
-        return "it's a tie game"
-    }
-    else if(result == "player"){
-    return `Player wins ${playerSelection} beats ${computerChoice}`}
-    else {
-        return `computer wins  ${computerChoice} beats  ${playerSelection}`
-
-    }
+  if (pS === cS) {
+    currentWinner.textContent = "It's a TIE!";
+  } else if ((pS == "rock") & (cS == "scissors")) {
+    currentWinner.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+    playerScore++;
+  } else if ((pS == "scissors") & (cS == "paper")) {
+    currentWinner.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+    playerScore++;
+  } else if ((pS == "paper") & (cS == "rock")) {
+    currentWinner.textContent = `You Win! ${playerSelection} beats ${computerSelection}`;
+    playerScore++;
+  } else {
+    currentWinner.textContent = `You Lose! ${computerSelection} beats ${playerSelection}`;
+    computerScore++;
+  }
 }
 
+// Disable button score 5
+function disableButton() {
+  buttons.forEach((btn) => {
+    btn.disabled = true;
+  });
+}
 
-const btn = document.getElementsByClassName("btn");
-	btn.addEventListener('click', function(){ 
-	playerSelection = "scissors";
-	});
+// start game
+buttons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    playRound(btn.className);
+    pScore.textContent = playerScore;
+    cScore.textContent = computerScore;
 
-const computerChoice  = getComputerChoice();
-console.log(playRound(computerChoice,playerSelection));
-
-
-
-
-
-//const playerSelection = "rock";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (playerScore === 5) {
+      gameWinner.textContent = "You WIN this game! Try again (reload the page)";
+      disableButton();
+    } else if (computerScore === 5) {
+      gameWinner.textContent =
+        "You LOSE this game! Try again (reload the page)";
+      disableButton();
+    }
+  });
+});
